@@ -13,7 +13,21 @@ WORKDIR /app
 # Install Python dependencies
 COPY requirements.txt .
 RUN python3 -m pip install --upgrade pip && \
-    pip install -r requirements.txt
+    
+    # First, we install pydeps without its dependencies
+    pip install pydeps --no-deps && \
+
+    # Then, we install pyasp with its dependencies
+    #apt-get install -y libclingo-dev && \
+    pip install pyasp && \
+
+    # Finally, we install pydeps with all its dependencies
+    pip install pydeps && \
+
+    # Remove unnecessary packages and dependencies
+    apt-get remove -y gnupg && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # Stage 2: Copy dependencies and run app
 FROM ubuntu:latest
