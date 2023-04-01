@@ -1,0 +1,4 @@
+getch
+chardet
+modulefinder
+
