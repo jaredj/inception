@@ -39,41 +39,6 @@ def print_directory_tree(path, prefix=''):
             if not f.startswith('.'):
                 print(f"{sub_indent}{f}")
 
-def find_imports(module_path):
-    with open(module_path, 'r') as file:
-        node = ast.parse(file.read())
-    imports = [x.name for x in ast.walk(node) if isinstance(x, ast.Import)]
-    imports.extend([x.module for x in ast.walk(node) if isinstance(x, ast.ImportFrom)])
-    return imports
-
-def find_module_path(module_name, search_path=None):
-    try:
-        spec = importlib.util.find_spec(module_name, search_path)
-        if spec is not None and spec.origin is not None:
-            return spec.origin
-    except ImportError:
-        pass
-    return None
-
-def print_dependency_graph(starting_script):
-    visited = set()
-    queue = deque([(starting_script, os.path.dirname(starting_script))])
-
-    while queue:
-        module_path, search_path = queue.popleft()
-        module_name = os.path.splitext(os.path.basename(module_path))[0]
-
-        if module_name not in visited:
-            visited.add(module_name)
-            print(f"{module_name}:")
-
-            for imp in find_imports(module_path):
-                print(f"    {imp}")
-                imp_path = find_module_path(imp, search_path)
-                if imp_path is not None:
-                    queue.append((imp_path, os.path.dirname(imp_path)))
-
-
 def main():
     sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
     print("```")
@@ -84,10 +49,6 @@ def main():
 
     print("Directory Tree:")
     print_directory_tree(".")
-
-    starting_script = os.path.join(os.path.dirname(__file__), "src", "mvp_cli.py")
-    print("\nDependency Graph for ./src/mvp_cli.py:")
-    print_dependency_graph(starting_script)
 
 if __name__ == "__main__":
     main()
