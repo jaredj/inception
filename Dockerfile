@@ -13,17 +13,13 @@ WORKDIR /app
 # Install Python dependencies
 COPY requirements.txt .
 RUN python3 -m pip install --upgrade pip && \
-    
     # First, we install pydeps without its dependencies
     pip install pydeps --no-deps && \
-
     # Then, we install pyasp with its dependencies
     #apt-get install -y libclingo-dev && \
     pip install pyasp && \
-
     # Finally, we install pydeps with all its dependencies
     pip install pydeps && \
-
     # Remove unnecessary packages and dependencies
     apt-get remove -y gnupg && \
     apt-get autoremove -y && \
@@ -38,7 +34,9 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy dependencies from build-deps stage
-COPY --from=build-deps /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
+COPY --from=build-deps /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
+COPY --from=build-deps /usr/lib/python3/dist-packages /usr/lib/python3/dist-packages
+COPY --from=build-deps /usr/lib/python3.10/dist-packages /usr/lib/python3.10/dist-packages
 
 # Set the working directory
 WORKDIR /app
