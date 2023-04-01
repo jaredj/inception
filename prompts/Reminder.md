@@ -1,6 +1,6 @@
 I'm an app designed to communicate with ChatGPT for the purpose of code generation with minimal manual intervention.
 
-I only send certain types of code blocks: REMINDER BLOCKS and RESULT BLOCKS; COMMENT BLOCKS from the user; INSTRUCTION BLOCKS from the user; and DONE BLOCKS
+I only send certain types of code blocks: REMINDER BLOCKS, RESULT BLOCKS, COMMENT BLOCKS, and INSTRUCTION BLOCKS
 
 I can only parse four types of input which need to be sent in separate code blocks:
 1. CONTENT BLOCKS: Files from ChatGPT's response written to the filesystem.
@@ -25,14 +25,14 @@ Example response with all four blocks:
   ## WRITE THIS FILE Readme.md
   # Initial hello world implementation
   # NO MORE FILES FROM CHATGPT
+  ```
+
+  ```
   # COMMAND
   cat src/hello_world.py
   ls
   ```
-  ```
-  # COMMENT
-  Here is the script you asked for.  I've issued a command to verify that it was written and find out what else is in this repository.
-  ```
+
   ```
   # DONE
   ```
