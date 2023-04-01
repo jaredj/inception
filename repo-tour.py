@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+import inspect
 import os
+import sys
 import chardet
 from pathlib import Path
 import importlib
@@ -39,55 +41,56 @@ def print_directory_tree(path, prefix=''):
             if not f.startswith('.'):
                 print(f"{sub_indent}{f}")
 
+def find_imports(module):
+    imports = []
+    for name, obj in inspect.getmembers(module):
+        if inspect.ismodule(obj):
+            imports.append(obj.__name__)
+    return imports
+
 def print_dependency_graph(starting_script):
-    import sys
-    import ast
-    from collections import defaultdict
-
-    sys.path.append(os.path.abspath(os.path.dirname(starting_script)))
-
     visited = set()
     queue = deque([starting_script])
-    graph = defaultdict(set)
 
     while queue:
-        script = queue.popleft()
-        if script not in visited:
-            visited.add(script)
+        module_path = queue.popleft()
+        module_name = os.path.splitext(os.path.basename(module_path))[0]
 
-            spec = importlib.util.spec_from_file_location(Path(script).stem, script)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
+        if module_name not in visited:
+            visited.add(module_name)
+            spec = importlib.util.spec_from_file_location(module_name, module_path)
 
-            with open(script, 'rt') as file:
-                tree = ast.parse(file.read(), script)
+            if spec is not None:
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                print(f"{module_name}:")
+                
+                if hasattr(module, "__path__"):
+                    search_path = module.__path__
+                else:
+                    search_path = None
 
-            for node in ast.walk(tree):
-                if isinstance(node, ast.Import):
-                    for alias in node.names:
-                        graph[module.__name__].add(alias.name)
-                elif isinstance(node, ast.ImportFrom):
-                    if node.module is not None:
-                        graph[module.__name__].add(node.module)
-
-    for key, values in graph.items():
-        print(f"{key}:")
-        for value in values:
-            print(f"    {value}")
+                for imp in find_imports(module):
+                    print(f"    {imp}")
+                    imp_path = find_module_path(imp, search_path)
+                    if imp_path is not None:
+                        queue.append(imp_path)
 
 def main():
+    sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
     print("```")
     print("# CONTENT:")
     send_directory(".")
     print("# NO MORE FILES FROM CHATGPT")
     print("```")
 
-    print("\nDirectory Tree:")
+    print("Directory Tree:")
     print_directory_tree(".")
 
-    starting_script = "./src/mvp_cli.py"
-    print(f"\nDependency Graph for {starting_script}:")
+    starting_script = os.path.join(os.path.dirname(__file__), "src", "mvp_cli.py")
+    print("\nDependency Graph for ./src/mvp_cli.py:")
     print_dependency_graph(starting_script)
+
 
 if __name__ == "__main__":
     main()
