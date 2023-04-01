@@ -1,16 +1,33 @@
+import sys
+
+from getch import getch
+from reminders import print_reminder
+
+
 def handle_instruction():
-    user_input = input("Provide an INSTRUCTION:\n")
+    print("Provide an INSTRUCTION:")
+    user_input = sys.stdin.readline().strip()
     print_block("INSTRUCTION", user_input)
 
+
 def handle_comment():
-    user_input = input("Provide a COMMENT:\n")
+    print("Provide a COMMENT:")
+    user_input = sys.stdin.readline().strip()
     print_block("COMMENT", user_input)
 
-def handle_skip():
-    pass
 
 def print_block(block_type, content):
-    print("```\n# REMINDER")
-    print_reminder()
-    print("```\n")
-    print(f"```\n#{block_type}\n{content}\n```\n")
+    print(f"```{block_type}\n{content}\n```")
+
+
+def main_menu():
+    print("Press 'i' for INSTRUCTION, 'c' for COMMENT, or 's' for SKIP:")
+    choice = getch()
+    if choice == 'i':
+        handle_instruction()
+    elif choice == 'c':
+        handle_comment()
+    elif choice == 's':
+        pass
+    else:
+        print("Invalid input. Please try again.")
