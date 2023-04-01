@@ -1,11 +1,37 @@
 #!/usr/bin/env python3
+import sys
 from file_parser import parse_content_block, parse_command_block
 from file_writer import write_files
 from command_executor import execute_commands
-import os
+from reminder import print_reminder
 
 def main():
-    content_block = input("Paste the CONTENT BLOCK here:\n")
+    choice = input("Press 'i' for INSTRUCTION or 'r' for COMMENT: ")
+    if choice.lower() == 'i':
+        user_input = input("Provide an INSTRUCTION:\n")
+    elif choice.lower() == 'r':
+        user_input = input("Provide a COMMENT:\n")
+    else:
+        print("Invalid choice.")
+        return
+
+    print("\n```\n#", end="")
+    if choice.lower() == 'i':
+        print("INSTRUCTION")
+    else:
+        print("COMMENT")
+    print(user_input)
+    print("```\n")
+
+    print_reminder()
+
+    print("Paste the CONTENT BLOCK here and add a line with '# NO MORE FILES FROM CHATGPT' at the end:")
+    content_block = ""
+    for line in sys.stdin:
+        content_block += line
+        if line.strip() == "# NO MORE FILES FROM CHATGPT":
+            break
+
     file_contents = parse_content_block(content_block)
     write_files(file_contents)
 
@@ -17,13 +43,7 @@ def main():
         for result in output:
             print(result)
 
-    with open("prompts/Reminder.md", "r") as f:
-        reminder_block = f.read()
-    print("\n# REMINDER")
-    print(reminder_block)
-
     print("\n# DONE")
 
 if __name__ == "__main__":
     main()
-

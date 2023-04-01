@@ -7,7 +7,9 @@ def parse_content_block(content_block):
         if line.startswith("## WRITE THIS FILE"):
             current_file = line.split("## WRITE THIS FILE")[1].strip()
             file_contents[current_file] = []
-        else:
+        elif line == "# NO MORE FILES FROM CHATGPT":
+            break
+        elif current_file is not None:
             file_contents[current_file].append(line)
 
     return file_contents

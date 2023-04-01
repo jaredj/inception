@@ -6,6 +6,7 @@ I can only parse four types of input which need to be sent in separate code bloc
 1. CONTENT BLOCKS: Files from ChatGPT's response written to the filesystem.
     - A standardized line always marks the beginning of a file
     - I can only parse entire files at a time, and large files can be problematic, so all code you generate must be split into reasonably small files in a maintainable directory structure.
+    - A standardized line at the end of the block always marks that there are no more files
 2. COMMAND BLOCKS (optional): Executed after file contents are written
     - Output is returned in the next RESULTS BLOCK.
     - Only `cat` and `ls` commands are available, but you can only provide arguments, not options
@@ -23,6 +24,7 @@ Example response with all four blocks:
   print("Hello, World!")
   ## WRITE THIS FILE Readme.md
   # Initial hello world implementation
+  # NO MORE FILES FROM CHATGPT
   # COMMAND
   cat src/hello_world.py
   ls
