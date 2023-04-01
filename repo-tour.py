@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
-import inspect
+import ast
 import os
 import sys
 import chardet
-from pathlib import Path
 import importlib
+import inspect
 import pkgutil
 from collections import deque
+from pathlib import Path
 
 def send_directory(path, prefix='', fallback_encoding='utf-8'):
     for root, dirs, files in os.walk(path, topdown=True):
-        # exclude hidden directories and __pycache__
         dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
         for file in files:
-            # exclude hidden files
             if not file.startswith("."):
                 filepath = os.path.join(root, file)
                 relpath = os.path.relpath(filepath, path)
@@ -31,7 +30,6 @@ def send_directory(path, prefix='', fallback_encoding='utf-8'):
 
 def print_directory_tree(path, prefix=''):
     for root, dirs, files in os.walk(path):
-        # exclude hidden directories and __pycache__
         dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
         level = root.replace(path, '').count(os.sep)
         indent = ' ' * 4 * level
@@ -41,40 +39,40 @@ def print_directory_tree(path, prefix=''):
             if not f.startswith('.'):
                 print(f"{sub_indent}{f}")
 
-def find_imports(module):
-    imports = []
-    for name, obj in inspect.getmembers(module):
-        if inspect.ismodule(obj):
-            imports.append(obj.__name__)
+def find_imports(module_path):
+    with open(module_path, 'r') as file:
+        node = ast.parse(file.read())
+    imports = [x.name for x in ast.walk(node) if isinstance(x, ast.Import)]
+    imports.extend([x.module for x in ast.walk(node) if isinstance(x, ast.ImportFrom)])
     return imports
+
+def find_module_path(module_name, search_path=None):
+    try:
+        spec = importlib.util.find_spec(module_name, search_path)
+        if spec is not None and spec.origin is not None:
+            return spec.origin
+    except ImportError:
+        pass
+    return None
 
 def print_dependency_graph(starting_script):
     visited = set()
-    queue = deque([starting_script])
+    queue = deque([(starting_script, os.path.dirname(starting_script))])
 
     while queue:
-        module_path = queue.popleft()
+        module_path, search_path = queue.popleft()
         module_name = os.path.splitext(os.path.basename(module_path))[0]
 
         if module_name not in visited:
             visited.add(module_name)
-            spec = importlib.util.spec_from_file_location(module_name, module_path)
+            print(f"{module_name}:")
 
-            if spec is not None:
-                module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(module)
-                print(f"{module_name}:")
-                
-                if hasattr(module, "__path__"):
-                    search_path = module.__path__
-                else:
-                    search_path = None
+            for imp in find_imports(module_path):
+                print(f"    {imp}")
+                imp_path = find_module_path(imp, search_path)
+                if imp_path is not None:
+                    queue.append((imp_path, os.path.dirname(imp_path)))
 
-                for imp in find_imports(module):
-                    print(f"    {imp}")
-                    imp_path = find_module_path(imp, search_path)
-                    if imp_path is not None:
-                        queue.append(imp_path)
 
 def main():
     sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
@@ -90,7 +88,6 @@ def main():
     starting_script = os.path.join(os.path.dirname(__file__), "src", "mvp_cli.py")
     print("\nDependency Graph for ./src/mvp_cli.py:")
     print_dependency_graph(starting_script)
-
 
 if __name__ == "__main__":
     main()
