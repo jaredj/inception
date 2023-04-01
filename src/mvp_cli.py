@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
 import sys
-from cli_functions import handle_instruction, handle_comment, handle_skip
+from cli_functions import handle_instruction, handle_comment
 from file_parser import parse_content_block, parse_command_block
 from file_writer import write_files
 from command_executor import execute_commands
 from reminder import print_reminder
 
 def main():
-    choice = input("Press 'i' for INSTRUCTION, 'c' for COMMENT, or 's' for SKIP: ").lower()
+    choice = input("Press 'i' for INSTRUCTION or 'r' for COMMENT: ")
+    if choice.lower() == 'i':
+        user_input = input("Provide an INSTRUCTION:\n")
+    elif choice.lower() == 'r':
+        user_input = input("Provide a COMMENT:\n")
 
-    if choice == 'i':
-        handle_instruction()
-    elif choice == 'c':
-        handle_comment()
-    elif choice == 's':
-        handle_skip()
+    print("\n```\n#", end="")
+    if choice.lower() == 'i':
+        print("INSTRUCTION")
     else:
-        print("Invalid choice.")
-        return
+        print("COMMENT")
+    print(user_input)
+    print("```\n")
 
     print_reminder()
 
