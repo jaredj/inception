@@ -2,6 +2,7 @@
 
 import os
 import inspect
+import importlib.util
 
 # Define a function to get the signature of a function
 def get_function_signature(fn):
@@ -18,7 +19,9 @@ for dirpath, dirnames, filenames in os.walk("."):
 
             # Load the module
             module_name = filename[:-3]  # Strip off the .py extension
-            module = __import__(module_name)
+            spec = importlib.util.spec_from_file_location(module_name, filepath)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
 
             # Loop through all the objects in the module
             functions = []
