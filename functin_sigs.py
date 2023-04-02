@@ -21,16 +21,24 @@ for dirpath, dirnames, filenames in os.walk("."):
             module = __import__(module_name)
 
             # Loop through all the objects in the module
+            functions = []
             for name in dir(module):
                 obj = getattr(module, name)
 
                 # Only process functions
                 if inspect.isfunction(obj):
-                    print(f"Function: {name}")
-                    print(f"  Signature: {get_function_signature(obj)}")
+                    functions.append(obj)
 
-                    # Get the start and end line numbers for the function
-                    source_lines, starting_line_number = inspect.getsourcelines(obj)
-                    ending_line_number = starting_line_number + len(source_lines) - 1
-                    print(f"  Defined at line {starting_line_number} to {ending_line_number}")
+            # Sort the functions by their starting line number
+            functions.sort(key=lambda x: inspect.getsourcelines(x)[1])
+
+            # Print the functions in order
+            for func in functions:
+                print(f"Function: {func.__name__}")
+                print(f"  Signature: {get_function_signature(func)}")
+
+                # Get the start and end line numbers for the function
+                source_lines, starting_line_number = inspect.getsourcelines(func)
+                ending_line_number = starting_line_number + len(source_lines) - 1
+                print(f"  Defined at line {starting_line_number} to {ending_line_number}")
 
