@@ -18,15 +18,12 @@ RUN apt-get update && \
 # Set the working directory
 WORKDIR /app
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN python3 -m pip install --upgrade pip
-RUN    pip install -r requirements.txt
-RUN    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/*
-
 # Copy the entire current directory into the container
 COPY . .
+
+# Build the package and install it using pip
+RUN python3 setup.py sdist
+RUN pip3 install dist/inception-0.1.tar.gz
 
 # CMD command to run the desired script, e.g.:
 # CMD ["python3", "your_script.py"]

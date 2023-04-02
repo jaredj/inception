@@ -1,4 +1,0 @@
-getch
-chardet
-pydeps
-pipdeptree
