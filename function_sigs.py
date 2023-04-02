@@ -38,12 +38,10 @@ def process_directory_recursively(root_directory):
                 functions.sort(key=lambda x: inspect.getsourcelines(x)[1])
 
                 for func in functions:
-                    print(f"Function: {func.__name__}")
-                    print(f"  Signature: {get_function_signature(func)}")
-
+                    signature = get_function_signature(func)
                     source_lines, starting_line_number = inspect.getsourcelines(func)
                     ending_line_number = starting_line_number + len(source_lines) - 1
-                    print(f"  Defined at line {starting_line_number} to {ending_line_number}")
+                    print(f"  {signature} # LINES {starting_line_number}-{ending_line_number}")
 
                 # Remove the current directory from the Python path
                 sys.path.remove(current_directory)
