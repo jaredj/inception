@@ -1,21 +1,24 @@
+import ast
 import inspect
 
-def get_function_signature(fn):
-    sig = inspect.signature(fn)
-    return f"{fn.__name__}{sig}"
+def get_functions_from_ast(module_ast):
+    functions = []
+    for node in ast.walk(module_ast):
+        if isinstance(node, ast.FunctionDef):
+            functions.append(node)
+    return functions
+
+def get_function_signature(func_def):
+    arg_names = [arg.arg for arg in func_def.args.args]
+    signature = f"{func_def.name}({', '.join(arg_names)})"
+    return signature
 
 def get_module_functions(module):
     functions = []
     for name in dir(module):
         obj = getattr(module, name)
-
-        if inspect.isfunction(obj):
+        if inspect.isfunction(obj) and obj.__module__ == module.__name__:
             functions.append(obj)
-        elif inspect.isclass(obj):
-            for method_name in dir(obj):
-                method = getattr(obj, method_name)
-                if inspect.isfunction(method):
-                    functions.append(method)
     return functions
 
 def process_functions(functions):
