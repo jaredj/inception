@@ -18,6 +18,9 @@ def send_directory(path, prefix='', fallback_encoding='utf-8'):
                 relpath = os.path.relpath(filepath, path)
                 with open(filepath, "rb") as f:
                     content = None
+                    if os.path.getsize(filepath) == 0:
+                        print(f"## WRITE THIS FILE {os.path.join(prefix, relpath)}")
+                        continue
                     encoding = chardet.detect(f.read())['encoding']
                     f.seek(0)
                     try:
@@ -26,7 +29,8 @@ def send_directory(path, prefix='', fallback_encoding='utf-8'):
                         print(f"File {os.path.join(prefix, relpath)} has an invalid encoding ({encoding}), falling back to {fallback_encoding}")
                         content = f.read().decode(fallback_encoding)
                 print(f"## WRITE THIS FILE {os.path.join(prefix, relpath)}")
-                print(content)
+                if content is not None:
+                    print(content)
 
 def print_directory_tree(path, prefix=''):
     for root, dirs, files in os.walk(path):
