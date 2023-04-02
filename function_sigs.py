@@ -20,37 +20,45 @@ def process_functions(functions):
         print(f"  {signature} # LINES {starting_line_number}-{ending_line_number}")
 
 
+def get_module_functions(module):
+    functions = []
+    for name in dir(module):
+        obj = getattr(module, name)
+
+        if inspect.isfunction(obj):
+            functions.append(obj)
+        elif inspect.isclass(obj):
+            for method_name in dir(obj):
+                method = getattr(obj, method_name)
+                if inspect.isfunction(method):
+                    functions.append(method)
+    return functions
+
+
+def process_file(filepath):
+    print(f"File: {filepath}")
+
+    module_name = os.path.splitext(os.path.basename(filepath))[0]
+
+    current_directory = os.path.abspath(os.path.dirname(filepath))
+    sys.path.insert(0, current_directory)
+
+    spec = importlib.util.spec_from_file_location(module_name, filepath)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    functions = get_module_functions(module)
+    process_functions(functions)
+
+    sys.path.remove(current_directory)
+
+
 def process_directory_recursively(root_directory):
     for dirpath, dirnames, filenames in os.walk(root_directory):
         for filename in filenames:
             if filename.endswith(".py"):
                 filepath = os.path.join(dirpath, filename)
-                print(f"File: {filepath}")
-
-                module_name = os.path.splitext(filename)[0]
-
-                current_directory = os.path.abspath(dirpath)
-                sys.path.insert(0, current_directory)
-
-                spec = importlib.util.spec_from_file_location(module_name, filepath)
-                module = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(module)
-
-                functions = []
-                for name in dir(module):
-                    obj = getattr(module, name)
-
-                    if inspect.isfunction(obj):
-                        functions.append(obj)
-                    elif inspect.isclass(obj):
-                        for method_name in dir(obj):
-                            method = getattr(obj, method_name)
-                            if inspect.isfunction(method):
-                                functions.append(method)
-
-                process_functions(functions)
-
-                sys.path.remove(current_directory)
+                process_file(filepath)
 
 
 if __name__ == "__main__":
