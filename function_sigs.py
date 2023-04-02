@@ -9,11 +9,13 @@ def get_function_signature(fn):
     sig = inspect.signature(fn)
     return f"{fn.__name__}{sig}"
 
+current_script = os.path.basename(__file__)
+
 # Loop through all the files in the current directory
 for dirpath, dirnames, filenames in os.walk("."):
     for filename in filenames:
-        # Only process .py files
-        if filename.endswith(".py"):
+        # Only process .py files and exclude the current script
+        if filename.endswith(".py") and filename != current_script:
             filepath = os.path.join(dirpath, filename)
             print(f"File: {filepath}")
 
