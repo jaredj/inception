@@ -1,49 +1,55 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import inspect
 import importlib.util
 
-# Define a function to get the signature of a function
+
 def get_function_signature(fn):
     sig = inspect.signature(fn)
     return f"{fn.__name__}{sig}"
 
-current_script = os.path.basename(__file__)
 
-# Loop through all the files in the current directory
-for dirpath, dirnames, filenames in os.walk("."):
-    for filename in filenames:
-        # Only process .py files and exclude the current script
-        if filename.endswith(".py") and filename != current_script:
-            filepath = os.path.join(dirpath, filename)
-            print(f"File: {filepath}")
+def process_directory_recursively(root_directory):
+    for dirpath, dirnames, filenames in os.walk(root_directory):
+        for filename in filenames:
+            if filename.endswith(".py"):
+                filepath = os.path.join(dirpath, filename)
+                print(f"File: {filepath}")
 
-            # Load the module
-            module_name = filename[:-3]  # Strip off the .py extension
-            spec = importlib.util.spec_from_file_location(module_name, filepath)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
+                module_name = os.path.splitext(filename)[0]
 
-            # Loop through all the objects in the module
-            functions = []
-            for name in dir(module):
-                obj = getattr(module, name)
+                # Add the current directory to the Python path for imports
+                current_directory = os.path.abspath(dirpath)
+                sys.path.insert(0, current_directory)
 
-                # Only process functions
-                if inspect.isfunction(obj):
-                    functions.append(obj)
+                spec = importlib.util.spec_from_file_location(module_name, filepath)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
 
-            # Sort the functions by their starting line number
-            functions.sort(key=lambda x: inspect.getsourcelines(x)[1])
+                functions = []
+                for name in dir(module):
+                    obj = getattr(module, name)
 
-            # Print the functions in order
-            for func in functions:
-                print(f"Function: {func.__name__}")
-                print(f"  Signature: {get_function_signature(func)}")
+                    if inspect.isfunction(obj):
+                        functions.append(obj)
 
-                # Get the start and end line numbers for the function
-                source_lines, starting_line_number = inspect.getsourcelines(func)
-                ending_line_number = starting_line_number + len(source_lines) - 1
-                print(f"  Defined at line {starting_line_number} to {ending_line_number}")
+                functions.sort(key=lambda x: inspect.getsourcelines(x)[1])
+
+                for func in functions:
+                    print(f"Function: {func.__name__}")
+                    print(f"  Signature: {get_function_signature(func)}")
+
+                    source_lines, starting_line_number = inspect.getsourcelines(func)
+                    ending_line_number = starting_line_number + len(source_lines) - 1
+                    print(f"  Defined at line {starting_line_number} to {ending_line_number}")
+
+                # Remove the current directory from the Python path
+                sys.path.remove(current_directory)
+
+
+if __name__ == "__main__":
+    root_directory = os.path.dirname(os.path.abspath(__file__))
+    process_directory_recursively(root_directory)
 
