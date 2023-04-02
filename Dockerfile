@@ -18,13 +18,24 @@ RUN apt-get update && \
 # Set the working directory
 WORKDIR /app
 
+# Create and activate virtual environment
+RUN python3 -m venv venv
+ENV PATH="/app/venv/bin:$PATH"
+
+# Install Python dependencies
+RUN pip install --upgrade pip
+RUN apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN ln -sf $(which python3) /usr/bin/python
+
 # Copy the entire current directory into the container
 COPY . .
 
-# Build the package and install it using pip
-RUN python3 setup.py sdist
-RUN pip3 install dist/inception-0.1.tar.gz
+# Install the package
+RUN python setup.py sdist
+RUN pip install dist/inception-0.1.0.tar.gz
 
-# CMD command to run the desired script, e.g.:
-# CMD ["python3", "your_script.py"]
+# Start the container in detached mode
+CMD ["sleep", "infinity"]
 
