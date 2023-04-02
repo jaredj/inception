@@ -20,11 +20,9 @@ WORKDIR /app
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN python3 -m pip install --upgrade pip && \
-    pip install pydeps --no-deps && \
-    pip install pyasp && \
-    pip install pydeps && \
-    apt-get autoremove -y && \
+RUN python3 -m pip install --upgrade pip
+RUN    pip install -r requirements.txt
+RUN    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy the entire current directory into the container
