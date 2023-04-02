@@ -28,5 +28,9 @@ for dirpath, dirnames, filenames in os.walk("."):
                 if inspect.isfunction(obj):
                     print(f"Function: {name}")
                     print(f"  Signature: {get_function_signature(obj)}")
-                    print(f"  Defined at line {inspect.getsourcelines(obj)[1]} to {inspect.getsourcelines(obj)[-1]}")
+
+                    # Get the start and end line numbers for the function
+                    source_lines, starting_line_number = inspect.getsourcelines(obj)
+                    ending_line_number = starting_line_number + len(source_lines) - 1
+                    print(f"  Defined at line {starting_line_number} to {ending_line_number}")
 
