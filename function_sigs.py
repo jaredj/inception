@@ -5,61 +5,19 @@ import sys
 import inspect
 import importlib.util
 
+# Add the 'src' directory to the Python path
+src_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src')
+sys.path.insert(0, src_directory)
 
-def get_function_signature(fn):
-    sig = inspect.signature(fn)
-    return f"{fn.__name__}{sig}"
-
-
-def process_functions(functions):
-    functions.sort(key=lambda x: inspect.getsourcelines(x)[1])
-    for func in functions:
-        signature = get_function_signature(func)
-        source_lines, starting_line_number = inspect.getsourcelines(func)
-        ending_line_number = starting_line_number + len(source_lines) - 1
-        print(f"  {signature} # LINES {starting_line_number}-{ending_line_number}")
-
-
-def get_module_functions(module):
-    functions = []
-    for name in dir(module):
-        obj = getattr(module, name)
-
-        if inspect.isfunction(obj):
-            functions.append(obj)
-        elif inspect.isclass(obj):
-            for method_name in dir(obj):
-                method = getattr(obj, method_name)
-                if inspect.isfunction(method):
-                    functions.append(method)
-    return functions
-
-
-def process_file(filepath):
-    print(f"File: {filepath}")
-
-    module_name = os.path.splitext(os.path.basename(filepath))[0]
-
-    current_directory = os.path.abspath(os.path.dirname(filepath))
-    sys.path.insert(0, current_directory)
-
-    spec = importlib.util.spec_from_file_location(module_name, filepath)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-
-    functions = get_module_functions(module)
-    process_functions(functions)
-
-    sys.path.remove(current_directory)
-
+# Import the required function
+from signature_utils import print_file_function_signatures
 
 def process_directory_recursively(root_directory):
     for dirpath, dirnames, filenames in os.walk(root_directory):
         for filename in filenames:
             if filename.endswith(".py"):
                 filepath = os.path.join(dirpath, filename)
-                process_file(filepath)
-
+                print_file_function_signatures(filepath)
 
 if __name__ == "__main__":
     root_directory = os.path.dirname(os.path.abspath(__file__))
