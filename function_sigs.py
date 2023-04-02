@@ -11,6 +11,15 @@ def get_function_signature(fn):
     return f"{fn.__name__}{sig}"
 
 
+def process_functions(functions):
+    functions.sort(key=lambda x: inspect.getsourcelines(x)[1])
+    for func in functions:
+        signature = get_function_signature(func)
+        source_lines, starting_line_number = inspect.getsourcelines(func)
+        ending_line_number = starting_line_number + len(source_lines) - 1
+        print(f"  {signature} # LINES {starting_line_number}-{ending_line_number}")
+
+
 def process_directory_recursively(root_directory):
     for dirpath, dirnames, filenames in os.walk(root_directory):
         for filename in filenames:
@@ -20,7 +29,6 @@ def process_directory_recursively(root_directory):
 
                 module_name = os.path.splitext(filename)[0]
 
-                # Add the current directory to the Python path for imports
                 current_directory = os.path.abspath(dirpath)
                 sys.path.insert(0, current_directory)
 
@@ -34,16 +42,14 @@ def process_directory_recursively(root_directory):
 
                     if inspect.isfunction(obj):
                         functions.append(obj)
+                    elif inspect.isclass(obj):
+                        for method_name in dir(obj):
+                            method = getattr(obj, method_name)
+                            if inspect.isfunction(method):
+                                functions.append(method)
 
-                functions.sort(key=lambda x: inspect.getsourcelines(x)[1])
+                process_functions(functions)
 
-                for func in functions:
-                    signature = get_function_signature(func)
-                    source_lines, starting_line_number = inspect.getsourcelines(func)
-                    ending_line_number = starting_line_number + len(source_lines) - 1
-                    print(f"  {signature} # LINES {starting_line_number}-{ending_line_number}")
-
-                # Remove the current directory from the Python path
                 sys.path.remove(current_directory)
 
 
