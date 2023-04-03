@@ -10,12 +10,15 @@ def prompt_and_decode_content_block():
     while True:
         print("Paste the CONTENT BLOCK here and add a line with '# NO MORE FILES FROM CHATGPT' at the end:")
         content_block = ""
-        for line in sys.stdin:
-            content_block += line
-            if line.strip() == "# NO MORE FILES FROM CHATGPT":
-                break
-            if line.strip() == "# DONE":
-                return
+        try:
+            for line in sys.stdin:
+                content_block += line
+                if line.strip() == "# NO MORE FILES FROM CHATGPT":
+                    break
+        except KeyboardInterrupt:
+            break
+        except EOFError:
+            break
 
         decode_content_block(content_block)
 

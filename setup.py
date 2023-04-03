@@ -9,6 +9,7 @@ setup(
         'getch',
         'pydeps',
         'pipdeptree',
+        'pyperclip',
     ],
     entry_points={
         'console_scripts': [
@@ -24,4 +25,3 @@ setup(
     ],
     python_requires='>=3.6',
 )
-
