@@ -10,8 +10,8 @@ def send_files():
     send_directory(".", prefix='src')
     print("# NO MORE FILES FROM CHATGPT")
     print("```")  # Add triple backticks
-    print("\nDirectory Tree:")
-    print_directory_tree(".", prefix='src')
+#    print("\nDirectory Tree:")
+#    print_directory_tree(".", prefix='src')
 
 if __name__ == "__main__":
     send_files()
