@@ -13,6 +13,7 @@ setup(
     entry_points={
         'console_scripts': [
             'inception-send-files = inception.introspect.send_files.send_files:main',
+            'inception-decode-prompt = inception.decode.content_block:main',
             'inception-function-sigs = inception.introspect.function_signatures.function_sigs:process_directory_recursively'
         ],
     },

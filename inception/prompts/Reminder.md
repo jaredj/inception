@@ -1,22 +1,26 @@
+```
+# IMPORTANT!
+
 I'm an app designed to communicate with ChatGPT for the purpose of code generation with minimal manual intervention.
 
-I only send certain types of code blocks: REMINDER BLOCKS, RESULT BLOCKS, COMMENT BLOCKS, and INSTRUCTION BLOCKS
-
-I can only parse four types of input which need to be sent in separate code blocks:
-1. CONTENT BLOCKS: Files from ChatGPT's response written to the filesystem.
+I can only parse two types of blocks:
+1. REQUEST BLOCKS: View the contents of the user's repositories
+    - List the files that I should read to you to provide enough context to complete your task
+    - Formatted like CONTENT BLOCKS but without any content
+2. CONTENT BLOCKS: Files from ChatGPT's response written to the filesystem.
+    - DO NOT SEND CONTENT BLOCK until the user responds with '# EXECUTE`
     - A standardized line always marks the beginning of a file
     - I can only parse entire files at a time, and large files can be problematic, so all code you generate must be split into reasonably small files in a maintainable directory structure.
     - A standardized line at the end of the block always marks that there are no more files
-2. COMMAND BLOCKS (optional): Executed after file contents are written
-    - Output is returned in the next RESULTS BLOCK.
-    - Only `cat` and `ls` commands are available, but you can only provide arguments, not options
-    - Standalone or after CONTENT BLOCKS; useful for validation
-3. COMMENT BLOCKS: questions and explanations passed to the userd responses provided in a COMMENT block
-4. DONE BLOCKS: signal the end of your response.
 
-In the case of malformed blocks from you, errors decoding CONTENTS BLOCKS, or errors executing COMMAND BLOCKS, I'll return error messages and STDERR output in my RESULTS BLOCK
+Example ChatGPT CONTENT BLOCK and REQUEST BLOCK
 
-Example response with all four blocks:
+  ```
+  # REQUEST
+  ## SHOW ME THIS FILE src/main.py
+  ## SHOW ME THIS FILE Readme.md
+  ```
+
   ```
   # CONTENT
   ## WRITE THIS FILE src/hello_world.py
@@ -27,20 +31,12 @@ Example response with all four blocks:
   # NO MORE FILES FROM CHATGPT
   ```
 
-  ```
-  # COMMAND
-  cat src/hello_world.py
-  ls
-  ```
-
-  ```
-  # DONE
-  ```
-
 **IMPORTANT:** **NEVER** issue a CONTENT BLOCK with placeholder code/comments, as it's critical to avoid human intervention to complete your requirements.  If a task it too difficult then issue a COMMENT BLOCK asking for a revised task, or asking for information or clarification to allow you to do it.  If it's not to difficult, then do the entire task with nothing left out.
 
 Keep individual files short by aggressively splitting up code into small functions and splitting up files into smaller files, even when modifying existing code.
 
-Don't hesitate to issue preliminary COMMAND BLOCKS and examining the results to get information needed to generate the best possible content
+Whenever an instruction is given, you must first send a REQUEST BLOCK to get the context required to complete your task, complete any discussion with the user on requirements, and await the user's `# EXECUTE` command before generating code.
 
-Include COMMAND BLOCKS alongside CONTENT BLOCKS to verify the correctness and functionality of the generated code whenever possible. This will help ensure the quality and reliability of the code you provide.
+```
+
+Our first task is to finish debugging my utility for decoding CONTENT BLOCKS you send me
