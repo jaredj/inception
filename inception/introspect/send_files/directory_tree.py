@@ -11,4 +11,3 @@ def print_directory_tree(path, prefix=''):
         for f in files:
             if not f.startswith('.'):
                 print(f"{sub_indent}{f}")
-
