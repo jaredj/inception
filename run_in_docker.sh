@@ -9,6 +9,9 @@ docker rm -f $IMAGE_NAME 2>/dev/null || true
 # Build the Docker image
 docker build -t $IMAGE_NAME .
 
-# Run a container with an interactive shell in the /app directory
-docker run -it --rm -v "$(pwd):/app" -w /app $IMAGE_NAME /bin/bash
+# Start the container in detached mode
+docker run -it --name $IMAGE_NAME $IMAGE_NAME bash
+
+# Stop and remove the container when you exit the bash prompt
+docker stop $IMAGE_NAME && docker rm $IMAGE_NAME
 
