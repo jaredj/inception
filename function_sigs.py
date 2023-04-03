@@ -19,7 +19,8 @@ def process_directory_recursively(root_directory):
         for filename in filenames:
             if filename.endswith(".py"):
                 filepath = os.path.join(dirpath, filename)
-                print(f"File: {filepath}")
+                rel_filepath = os.path.relpath(filepath)
+                print(f"File: {rel_filepath}")
 
                 module_name = os.path.splitext(filename)[0]
 
