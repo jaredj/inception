@@ -10,8 +10,8 @@ import importlib.util
 src_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src')
 sys.path.insert(0, src_directory)
 
-from function_utils import get_functions_from_ast, get_function_signature
-from signature_utils import print_file_function_signatures
+from .function_utils import get_functions_from_ast, get_function_signature
+from .signature_utils import print_file_function_signatures
 
 def process_directory_recursively(root_directory):
     for dirpath, dirnames, filenames in os.walk(root_directory):

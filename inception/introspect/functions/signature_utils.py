@@ -1,7 +1,7 @@
 import sys
 import os
 import importlib.util
-from function_utils import get_module_functions, process_functions
+from .function_utils import get_module_functions, process_functions
 
 def print_file_function_signatures(filepath):
     print(f"File: {filepath}")
@@ -19,4 +19,3 @@ def print_file_function_signatures(filepath):
     process_functions(functions)
 
     sys.path.remove(current_directory)
-
