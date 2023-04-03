@@ -15,7 +15,7 @@ setup(
         'console_scripts': [
             'isend = inception.introspect.send_files.send_files:main',
             'idecode = inception.decode.content_block:prompt_and_decode_content_block',
-            'inception-function-sigs = inception.introspect.function_signatures.function_sigs:process_directory_recursively'
+            'inception-function-sigs = inception.introspect.functions.function_sigs:process_directory_recursively'
         ],
     },
     classifiers=[
