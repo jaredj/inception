@@ -4,7 +4,6 @@ import ast
 import importlib.util
 
 from .function_utils import get_functions_from_ast, get_function_signature
-from .signature_utils import print_file_function_signatures
 
 def process_directory_recursively(root_directory='.'):
     for dirpath, dirnames, filenames in os.walk(root_directory):
