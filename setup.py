@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='inception',
-    version='0.1',
+    version='0.2',
     packages=find_packages(),
     install_requires=[
         'chardet',
@@ -12,8 +12,8 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'inception-send-files=inception.introspect.send_files.send_files:send_files',
-            'inception-function-sigs=inception.introspect.function_signatures.function_sigs:process_directory_recursively'
+            'inception-send-files = inception.introspect.send_files.send_files:main',
+            'inception-function-sigs = inception.introspect.function_signatures.function_sigs:process_directory_recursively'
         ],
     },
     classifiers=[
