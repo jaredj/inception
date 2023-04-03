@@ -5,7 +5,6 @@ import os
 import sys
 import inspect
 import importlib.util
-import argparse
 
 # Add the 'src' directory to the Python path
 src_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src')
@@ -14,7 +13,7 @@ sys.path.insert(0, src_directory)
 from .function_utils import get_functions_from_ast, get_function_signature
 from .signature_utils import print_file_function_signatures
 
-def process_directory_recursively(root_directory="."):
+def process_directory_recursively(root_directory='.'):
     for dirpath, dirnames, filenames in os.walk(root_directory):
         for filename in filenames:
             if filename.endswith(".py"):
@@ -42,9 +41,10 @@ def process_directory_recursively(root_directory="."):
                 sys.path.remove(current_directory)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Process directory recursively for Python function signatures')
-    parser.add_argument('root_directory', metavar='ROOT_DIRECTORY', type=str, nargs='?', default='.')
-    args = parser.parse_args()
+    if len(sys.argv) == 2:
+        root_directory = sys.argv[1]
+    else:
+        root_directory = '.'
 
-    process_directory_recursively(args.root_directory)
+    process_directory_recursively(root_directory)
 
