@@ -5,9 +5,11 @@ from .send_directory import send_directory
 
 def send_files():
     sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+    print("```")  # Add triple backticks
     print("# CONTENT:")
     send_directory(".", prefix='src')
     print("# NO MORE FILES FROM CHATGPT")
+    print("```")  # Add triple backticks
     print("\nDirectory Tree:")
     print_directory_tree(".", prefix='src')
 

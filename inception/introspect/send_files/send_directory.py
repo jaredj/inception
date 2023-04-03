@@ -11,10 +11,9 @@ def send_directory(path, prefix='', fallback_encoding='utf-8'):
             if not file.startswith("."):
                 filepath = os.path.join(root, file)
                 relpath = os.path.relpath(filepath, path)
+                print(f"## WRITE THIS FILE {os.path.join(prefix, relpath)}")
                 content = get_file_contents(filepath, fallback_encoding)
                 if content is None:
-                    print(f"## WRITE THIS FILE {os.path.join(prefix, relpath)}")
                     continue
-                print(f"```{os.path.join(prefix, relpath)}```")
                 print(content)
 
