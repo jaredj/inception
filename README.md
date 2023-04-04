@@ -43,6 +43,7 @@ Here's an example of how one might use Inception to write a new app and then mod
 2. ChatGPT responds with a new content block:
 
 ChatGPT:
+
     ```
     # CONTENT
     ## WRITE THIS FILE hello_world.py
