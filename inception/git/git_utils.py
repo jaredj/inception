@@ -1,5 +1,17 @@
 from git import Repo
-import subprocess
+
+def create_branch(repo, branch_name):
+    repo.git.checkout('-b', branch_name)
+
+def checkout_branch(repo, branch_name):
+    repo.git.checkout(branch_name)
+
+def merge_branch(repo, source_branch, target_branch):
+    repo.git.checkout(target_branch)
+    repo.git.merge(source_branch, '--no-ff', '--no-commit')
+
+def delete_branch(repo, branch_name):
+    repo.git.branch('-D', branch_name)
 
 def git_diff(repo, file_path):
     diff = repo.git.diff(None, file_path)
