@@ -10,7 +10,7 @@ I can only parse CONTENT BLOCKS: A strict specifiation for formatting code sugge
 Example ChatGPT CONTENT BLOCK
 
   ```
-  # CONTENT
+  # CONTENT: Add hello-world script
   ## WRITE THIS FILE src/hello_world.py
   #!/usr/bin/env python3
   print("Hello, World!")

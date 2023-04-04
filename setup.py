@@ -11,6 +11,7 @@ setup(
         'pipdeptree',
         'pyperclip',
         'pytest',
+        'GitPython>=3.1.18',
     ],
     entry_points={
         'console_scripts': [
