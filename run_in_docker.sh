@@ -10,8 +10,7 @@ docker rm -f $IMAGE_NAME 2>/dev/null || true
 docker build -t $IMAGE_NAME .
 
 # Start the container in detached mode
-docker run -it --name $IMAGE_NAME $IMAGE_NAME bash
+docker run -it --name $IMAGE_NAME -v "$(pwd):/app" $IMAGE_NAME bash
 
 # Stop and remove the container when you exit the bash prompt
 docker stop $IMAGE_NAME && docker rm $IMAGE_NAME
-
