@@ -15,6 +15,7 @@ setup(
     entry_points={
         'console_scripts': [
             'isend = inception.introspect.send_files.send_files:main',
+            'ibootstrap = inception.introspect.send_files.whole_project:send_whole_project',
             'idecode = inception.decode.content_block:prompt_and_decode_content_block',
             'inception-function-sigs = inception.introspect.functions.function_sigs:process_directory_recursively [root_directory]'
         ],
