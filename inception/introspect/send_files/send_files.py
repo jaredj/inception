@@ -27,7 +27,11 @@ def main():
     content_block = generate_content_block(args.file_list)
     print(content_block)
     pyperclip.copy(content_block)
-    print("Content block copied to clipboard ✓")
+
+    # Count the number of lines in the content block
+    num_lines = content_block.count('\n')
+
+    print(f"{num_lines}-line CONTENT BLOCK copied to clipboard ✓")
 
 if __name__ == "__main__":
     main()
