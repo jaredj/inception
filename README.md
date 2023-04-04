@@ -12,16 +12,94 @@ The project consists of a set of Python scripts and tools for introspecting and 
 
 This project is still a work in progress, and ChatGPT has contributed the majority of the code.
 
+## Usage Example
+
+Here's an example of how one might use Inception to write a new app and then modify it slightly:
+
+1. First, run `isend hello_world.py` to read the existing code.
+
+    ```
+    [ .. user runs `isend hello_world.py` to read existing code ..]
+    USER:
+
+    [Reminder.md](prompts/Reminder.md)
+    # CONTENT
+    ## WRITE THIS FILE hello_world.py
+    import random
+
+    def print_hello_world():
+        print("Hello, World!")
+
+    if __name__ == "__main__":
+        print_hello_world()
+    # NO MORE FILES FROM CHATGPT
+    <example output of `inception-function-sigs`>
+
+    You can see my existing code above.  My first task for you is to modify this script to print its message in one of 3 different random languages each time it's called.
+
+    Don't forget, I can't understand code unless it's in a content block!
+    ```
+
+2. ChatGPT responds with a new content block:
+
+ChatGPT:
+    ```
+    # CONTENT
+    ## WRITE THIS FILE hello_world.py
+    import random
+
+    def print_hello_world():
+        greetings = [
+            "Hello, World!",  # English
+            "Hola, Mundo!",   # Spanish
+            "Bonjour, le Monde!"  # French
+        ]
+        greeting = random.choice(greetings)
+        print(greeting)
+
+    if __name__ == "__main__":
+        print_hello_world()
+    # NO MORE FILES FROM CHATGPT
+    ```
+
+3. The user pastes the content block into `idecode`.
+
+4. The user issues `git diff` locally to see the changes.
+
+    ```
+    [... user issues `git diff` locally ..]
+    <example output of `git diff`>
+    diff --git a/hello_world.py b/hello_world.py
+    index 0a0b1c2..3d4e5f6 100644
+    --- a/hello_world.py
+    +++ b/hello_world.py
+    @@ -1,5 +1,11 @@
+     import random
+
+     def print_hello_world():
+    -    print("Hello, World!")
+    +    greetings = [
+    +        "Hello, World!",  # English
+    +        "Hola, Mundo!",   # Spanish
+    +        "Bonjour, le Monde!"  # French
+    +    ]
+    +    greeting = random.choice(greetings)
+    +    print(greeting)
+
+     if __name__ == "__main__":
+         print_hello_world()
+    ```
+
 ## TODO
 
 1. **Checkpointing with git**: Automate git check-ins and add functionality to squash commits from a previous defined point once a change is somewhat fully baked. ChatGPT should be able to come up with the commit messages and the squash's.
 
-2. **Direct communication with OpenAI API**: Implement a system that starts with GPT-3.5 and then attempts to talk to GPT-4 or prompts the user to manually send the task to GPT-4 when necessary.
+2. **Direct communication with OpenAI API**: Implement a system that starts with GPT-3.5 and then attempts to talk to GPT-4 or prompts the user to manually send the task to GPT-4 if necessary.
 
-3. **Send and/or receive code changes**: Reduce code duplication by finding a way to receive changes in a predictable manner instead of requesting full file contents.
+3. **Send and/or receive code changes**: Improve the process of sending code changes to ChatGPT by finding a more predictable way to present changes, reducing code duplication.
 
-4. **Ask ChatGPT to decide what sections of code to send for context**: Develop a system that uses a separate GPT instance, which understands its only purpose is to figure out which code matters to the tasks at hand.
+4. **Ask ChatGPT to decide what sections of code to send for context**: Develop a system that uses a separate GPT instance to figure out which code matters to the tasks at hand, making the process more efficient.
 
-5. **Add unit tests**: Incorporate unit tests to ensure the correctness and stability of the project.
+5. **Add unit tests**: Enhance the project by including unit tests for the various features and functionality.
 
-6. **Lean on TDD for error checking**: Improve the development process by using Test-Driven Development (TDD), allowing ChatGPT to write tests and iterate on code more efficiently with fewer manual interventions.
+6. **Lean on TDD for error checking**: Rely more on Test-Driven Development for error checking, allowing ChatGPT to write tests, [manually review them,] then write the code, return failures, and iterate on the solution with minimal human intervention.
