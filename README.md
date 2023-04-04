@@ -14,7 +14,9 @@ This project is still a work in progress, and ChatGPT has contributed the majori
 
 ## Usage Example
 
-Here's an example of how one might use Inception to write a new app and then modify it slightly:
+- [The process of creating this README](https://shareg.pt/GmA3EY1) is an interesting usage example of sorts.
+
+- Here's an example of how one might use Inception to write a new app and then modify it slightly:
 
 1. First, run `isend hello_world.py` to read the existing code.
 
