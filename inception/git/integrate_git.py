@@ -1,6 +1,7 @@
 from git import Repo
 from datetime import datetime
 import os
+import sys
 from .git_utils import (
     git_add,
     git_commit,
@@ -43,3 +44,31 @@ def integrate_git_operations(file_path, commit_message):
     git_add(repo, file_path)
     files_changed = git_commit(repo, commit_message)
     return files_changed
+
+def main():
+    command = sys.argv[1]
+
+    if command == "current_branch":
+        print(get_current_branch_name())
+
+    elif command == "create_inception_branch":
+        commit_message = sys.argv[2]
+        print(create_and_checkout_inception_branch(commit_message))
+
+    elif command == "commit_changes":
+        file_path = sys.argv[2]
+        commit_message = sys.argv[3]
+        files_changed = integrate_git_operations(file_path, commit_message)
+        print_diff_stats(files_changed, get_current_branch_name())
+
+    elif command == "print_diff_stats":
+        branch_name = sys.argv[2]
+        files_changed = get_branch_difference(repo, branch_name)
+        print_diff_stats(files_changed, branch_name)
+
+    elif command == "print_merge_instructions":
+        branch_name = sys.argv[2]
+        print_merge_instructions(branch_name)
+
+if __name__ == "__main__":
+    main()

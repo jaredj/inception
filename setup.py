@@ -18,7 +18,8 @@ setup(
             'isend = inception.introspect.send_files.send_files:main',
             'ibootstrap = inception.introspect.send_files.whole_project:send_whole_project',
             'idecode = inception.decode.content_block:prompt_and_decode_content_block',
-            'inception-function-sigs = inception.introspect.functions.function_sigs:process_directory_recursively [root_directory]'
+            'inception-function-sigs = inception.introspect.functions.function_sigs:process_directory_recursively [root_directory]',
+            'integrate_git=inception.git.integrate_git:main'
         ],
     },
     classifiers=[
