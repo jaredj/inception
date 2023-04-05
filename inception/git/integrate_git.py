@@ -1,10 +1,10 @@
 from git import Repo
 from datetime import datetime
 import os
-from .utils import (
-    stage_changes,
-    commit_changes,
-    get_diff_stats,
+from .git_utils import (
+    git_add,
+    git_commit,
+    git_diffstat,
     get_branch_difference,
 )
 
@@ -25,7 +25,7 @@ def print_diff_stats(files_changed, branch_name):
     repo = Repo(search_parent_directories=True)
     for file_path in files_changed:
         print(f"\nChanges in {file_path}:")
-        print(get_diff_stats(repo, branch_name, file_path))
+        print(git_diffstat(repo, branch_name, file_path))
 
     if len(files_changed) > 1:
         print(f"\nChanges so far in {branch_name} branch:")
@@ -40,6 +40,6 @@ def print_merge_instructions(branch_name):
 
 def integrate_git_operations(file_path, commit_message):
     repo = Repo(search_parent_directories=True)
-    stage_changes(repo, file_path)
-    files_changed = commit_changes(repo, commit_message)
+    git_add(repo, file_path)
+    files_changed = git_commit(repo, commit_message)
     return files_changed

@@ -31,7 +31,7 @@ class TestGitUtilsOperations(unittest.TestCase):
 
     @patch("inception.git.git_utils.Repo")
     def test_perform_git_operations(self, mock_repo):
-        diff = MagicMock()
+        diff = MagicMock(return_value=True)
         add = MagicMock()
         commit = MagicMock()
         with patch("inception.git.git_utils.git_diff", diff):
@@ -42,3 +42,4 @@ class TestGitUtilsOperations(unittest.TestCase):
                     add.assert_called_once_with(mock_repo, "test_file.py")
                     commit.assert_called_once_with(mock_repo, "test commit")
                     self.assertTrue(success)
+

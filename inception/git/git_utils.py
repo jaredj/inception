@@ -30,6 +30,10 @@ def git_commit(repo, commit_message):
 def git_squash(repo, start_commit, end_commit, new_message):
     repo.git.rebase('-i', f"{start_commit}^{end_commit}", input=f"r {start_commit} {new_message}\n")
 
+def get_branch_difference(repo, branch_name):
+    parent_branch = repo.git.merge_base("main", branch_name)
+    return repo.git.diff(parent_branch, branch_name)
+
 def perform_git_operations(repo, file_path, commit_message, start_commit=None, end_commit=None, new_message=None):
     diff = git_diff(repo, file_path)
     if diff:
